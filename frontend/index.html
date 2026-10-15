@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Medicare AI — Personal Clinic</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-icon">✚</div><div><strong>Medicare AI</strong><small>Personal Clinic</small></div></div>
+  <div class="clinic-mini"><div class="doctor-photo doctor-photo-live">D</div><div><b class="doctor-name-live">Doctor</b><small class="doctor-specialization-live">Clinic</small></div></div>
+  <nav>
+    <button class="nav active" data-page="dashboard"><i>⌂</i>Dashboard</button>
+    <button class="nav" data-page="appointments"><i>◷</i>Appointments</button>
+    <button class="nav" data-page="patients"><i>♙</i>Patients</button>
+    <button class="nav" data-page="records"><i>▤</i>Medical Records</button>
+    <button class="nav" data-page="reports"><i>□</i>Reports & Tests</button>
+    <button class="nav" data-page="billing"><i>₹</i>Billing</button>
+    <button class="nav" data-page="messages"><i>✉</i>Messages</button>
+    <button class="nav" data-page="reviews"><i>★</i>Reviews</button>
+    <button class="nav" data-page="settings"><i>⚙</i>Settings</button>
+  </nav>
+  <div class="sidebar-foot">Medicare AI<br><small>Clinic workspace</small></div>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+<main class="main">
+<header class="topbar">
+  <div class="top-left"><button class="menu" id="menu">☰</button><div><h1 id="title">Dashboard</h1><p id="subtitle">Your clinic at a glance</p></div></div>
+  <div class="top-right">
+    <div class="search"><span>⌕</span><input id="globalSearch" placeholder="Search patients..."></div>
+    <button class="circle" id="refresh" title="Refresh">↻</button>
+    <button class="circle" id="notify" title="Notifications">♢</button>
+    <div class="top-doctor"><div class="doctor-photo doctor-photo-live">D</div><div><b class="doctor-name-live">Doctor</b><small class="doctor-specialization-live">Clinic</small></div></div>
+  </div>
+</header>
+
+<section class="page active" id="dashboard">
+  <div class="welcome">
+    <div><span>PERSONAL CLINIC WORKSPACE</span><h2>Good to see you, Doctor.</h2><p>Manage today's visits, patients and clinic activity from one place.</p></div>
+    <button class="primary" onclick="openAppointment()">＋ New Appointment</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-icon blue">♙</div><span>Total Patients</span><strong id="dPatients">0</strong><small>Registered patients</small></div>
+    <div class="stat"><div class="stat-icon purple">◷</div><span>Today's Visits</span><strong id="dVisits">0</strong><small id="dVisitNote">Scheduled today</small></div>
+    <div class="stat"><div class="stat-icon green">✓</div><span>Completed</span><strong id="dCompleted">0</strong><small>Completed today</small></div>
+    <div class="stat"><div class="stat-icon orange">₹</div><span>Paid Amount</span><strong id="dPaid">₹0</strong><small>From stored bills</small></div>
+  </div>
+  <div class="dashboard-grid">
+    <div class="card">
+      <div class="card-head"><div><h3>Today's appointments</h3><p>Your upcoming clinic visits</p></div><button class="link" onclick="go('appointments')">View all →</button></div>
+      <div id="dashAppointments"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Clinic snapshot</h3><p>Database activity</p></div></div>
+      <div class="snapshot">
+        <div><span>Medical Records</span><b id="snapRecords">0</b></div>
+        <div><span>Reports & Tests</span><b id="snapReports">0</b></div>
+        <div><span>Messages</span><b id="snapMessages">0</b></div>
+        <div><span>Reviews</span><b id="snapReviews">0</b></div>
+      </div>
+      <div class="mini-progress"><span>Clinic workspace</span><b>Active</b></div>
+    </div>
+  </div>
+  <div class="dashboard-grid lower">
+    <div class="card">
+      <div class="card-head"><div><h3>Recent activity</h3><p>Latest records from your clinic</p></div></div>
+      <div id="activityList"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Quick actions</h3><p>Common clinic tasks</p></div></div>
+      <div class="quick-actions">
+        <button onclick="openPatient()">＋<span><b>Add Patient</b><small>Create patient profile</small></span></button>
+        <button onclick="openAppointment()">◷<span><b>Appointment</b><small>Schedule a visit</small></span></button>
+        <button onclick="openRecord()">▤<span><b>Medical Record</b><small>Add visit notes</small></span></button>
+        <button onclick="openBill()">₹<span><b>New Bill</b><small>Create payment entry</small></span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="appointments">
+  <div class="section-head"><div><h2>Appointments</h2><p>Schedule and manage patient visits.</p></div><button class="primary" onclick="openAppointment()">＋ New Appointment</button></div>
+  <div class="card"><div class="toolbar"><div class="field-search">⌕<input id="apptSearch" placeholder="Search patient or reason"></div><select id="apptFilter"><option value="">All statuses</option><option>Scheduled</option><option>Waiting</option><option>Completed</option></select></div>
+  <div class="table-wrap"><table><thead><tr><th>PATIENT</th><th>DATE</th><th>TIME</th><th>REASON</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody id="apptBody"></tbody></table></div></div>
+</section>
+
+<section class="page" id="patients">
+  <div class="section-head"><div><h2>Patients</h2><p>Patient profiles and clinic information.</p></div><button class="primary" onclick="openPatient()">＋ Add Patient</button></div>
+  <div class="patient-summary"><div><b id="pCount">0</b><span>Total patients</span></div><div><b id="pMale">0</b><span>Male</span></div><div><b id="pFemale">0</b><span>Female</span></div></div>
+  <div class="card"><div class="toolbar"><div class="field-search">⌕<input id="patientSearch" placeholder="Search by name, phone or email"></div></div><div class="table-wrap"><table><thead><tr><th>PATIENT</th><th>AGE</th><th>GENDER</th><th>PHONE</th><th>EMAIL</th><th>ACTIONS</th></tr></thead><tbody id="patientBody"></tbody></table></div></div>
+</section>
+
+<section class="page" id="records">
+  <div class="section-head"><div><h2>Medical Records</h2><p>Diagnosis and notes connected to your patients.</p></div><button class="primary" onclick="openRecord()">＋ New Record</button></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>PATIENT</th><th>DIAGNOSIS</th><th>NOTES</th><th>DATE</th><th>ACTIONS</th></tr></thead><tbody id="recordBody"></tbody></table></div></div>
+</section>
+
+<section class="page" id="reports">
+  <div class="section-head"><div><h2>Reports & Tests</h2><p>Track laboratory tests and report status.</p></div><button class="primary" onclick="openReport()">＋ Add Report</button></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>PATIENT</th><th>TEST</th><th>STATUS</th><th>DATE</th><th>ACTIONS</th></tr></thead><tbody id="reportBody"></tbody></table></div></div>
+</section>
+
+<section class="page" id="billing">
+  <div class="section-head"><div><h2>Billing</h2><p>Invoices, payment status and collections.</p></div><button class="primary" onclick="openBill()">＋ New Bill</button></div>
+  <div class="billing-stats"><div><span>Paid</span><b id="paidTotal">₹0</b></div><div><span>Pending</span><b id="pendingTotal">₹0</b></div><div><span>Total bills</span><b id="billCount">0</b></div></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>PATIENT</th><th>AMOUNT</th><th>STATUS</th><th>DATE</th><th>ACTIONS</th></tr></thead><tbody id="billBody"></tbody></table></div></div>
+</section>
+
+<section class="page" id="messages">
+  <div class="section-head"><div><h2>Patient Messages</h2><p>Patient-wise message history.</p></div></div>
+  <div class="message-box card"><div class="patient-list" id="messagePatients"></div><div class="chat"><div class="chat-title" id="chatTitle">Select a patient</div><div class="chat-body" id="chatBody"></div><form id="messageForm"><input id="messageInput" placeholder="Write a message..."><button class="primary">Send</button></form></div></div>
+</section>
+
+
+
+<section class="page" id="reviews">
+  <div class="section-head"><div><h2>Patient Reviews</h2><p>Feedback already stored in your backend.</p></div></div>
+  <div id="reviewBody" class="review-grid"></div>
+</section>
+
+
+
+<section class="page" id="settings">
+  <div class="section-head"><div><h2>Clinic Profile</h2><p>Update the information your patients and clinic staff see.</p></div><button class="primary" id="saveProfileBtn">Save Changes</button></div>
+  <div class="settings-grid">
+    <div class="card profile-card">
+      <div class="profile-cover"></div>
+      <div class="profile-main"><div class="large-photo" id="profileAvatar">DS</div><h3 id="profileDoctorName">Doctor</h3><p id="profileSpecialization">Specialization</p><span>Clinic Profile</span></div>
+      <div class="profile-info"><div><small>Clinic</small><b id="profileClinicName">—</b></div><div><small>Phone</small><b id="profilePhone">—</b></div><div><small>Email</small><b id="profileEmail">—</b></div><div><small>Timings</small><b id="profileTimings">—</b></div></div>
+    </div>
+    <div class="card">
+      <h3>Doctor & Clinic Details</h3>
+      <form id="profileForm" class="form-grid settings-form">
+        <input name="doctorName" placeholder="Doctor name" required>
+        <input name="specialization" placeholder="Specialization">
+        <input name="clinicName" placeholder="Clinic name">
+        <input name="phone" placeholder="Clinic phone">
+        <input name="email" type="email" placeholder="Clinic email">
+        <input name="consultationFee" placeholder="Consultation fee">
+        <input name="clinicTimings" placeholder="Clinic timings">
+        <input name="doctorPhoto" placeholder="Doctor photo URL">
+        <input name="address" class="full" placeholder="Clinic address">
+        <div class="form-grid full location-grid"><input name="city" placeholder="City"><input name="state" placeholder="State"><input name="pincode" placeholder="Pincode"></div>
+      </form>
+     <!-- <p class="form-note">This information is saved in the clinic database and is loaded automatically for this clinic.</p> -->
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="modal"><div class="modal-card"><button class="close" onclick="closeModal()">×</button><h3 id="modalTitle"></h3><form id="modalForm"></form></div></div>
+<div id="toast"></div>
+<script src="js/script.js"></script>
+</body>
+</html>
